@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Сервер с AJAX</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <h1>Пример сервера с AJAX</h1>
+
+    <h2>Получить сообщение от сервера</h2>
+    <button id="getMessage">Получить сообщение</button>
+    <div id="message"></div>
+
+    <h2>Отправить сообщение на сервер</h2>
+    <input type="text" id="userMessage" placeholder="Введите ваше сообщение" />
+    <button id="sendEcho">Отправить сообщение</button>
+    <div id="response"></div>
+
+    <script>
+      $(document).ready(function () {
+        // Получить сообщение от сервера
+        $('#getMessage').click(function () {
+          $.get('http://localhost:3000/message', function (data) {
+            $('#message').text(data.message);
+          });
+        });
+
+        document.getElementById('sendEcho').addEventListener('click', () => {
+          const message = document.getElementById('userMessage').value; // Получаем значение из поля ввода
+          fetch('http://localhost:3000/echo', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message }), // Отправляем сообщение
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              document.getElementById('response').innerText = data.message; // Отображаем ответ на странице
+            })
+            .catch((error) => console.error('Ошибка:', error));
+        });
+      });
+    </script>
+  </body>
+</html>
